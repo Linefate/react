@@ -11544,6 +11544,9 @@
       Scheduler_cancelCallback(callbackNode);
     }
   }
+  // 执行同步任务，这样同步任务不需要等到下次事件循环再执行
+  // 比如在 componentDidMount 中执行 setState 创建的更新会在这里被同步执行
+  // 或useLayoutEffect
   function flushSyncCallbackQueue() {
     if (immediateQueueCallbackNode !== null) {
       var node = immediateQueueCallbackNode;
@@ -17558,14 +17561,18 @@
     didWarnAboutTailOptions = {};
   }
 
+  // 对于mount的组件，他会创建新的子Fiber节点
+  // 对于update的组件，他会将当前组件与该组件在上次更新时对应的Fiber节点比较（也就是俗称的Diff算法），将比较的结果生成新Fiber节点
   function reconcileChildren(current, workInProgress, nextChildren, renderLanes) {
     if (current === null) {
+      // 对于mount的组件
       // If this is a fresh new component that hasn't been rendered yet, we
       // won't update its child set by applying minimal side-effects. Instead,
       // we will add them all to the child before it gets rendered. That means
       // we can optimize this reconciliation pass by not tracking side-effects.
       workInProgress.child = mountChildFibers(workInProgress, null, nextChildren, renderLanes);
     } else {
+      // 对于update的组件
       // If the current child is the same as the work in progress, it means that
       // we haven't yet started any work on these children. Therefore, we use
       // the clone algorithm to create a copy of all the current children.
@@ -19679,11 +19686,12 @@
         return remountFiber(current, workInProgress, createFiberFromTypeAndProps(workInProgress.type, workInProgress.key, workInProgress.pendingProps, workInProgress._debugOwner || null, workInProgress.mode, workInProgress.lanes));
       }
     }
-
+    // update时
     if (current !== null) {
+      // update时：如果current存在可能存在优化路径，可以复用current（即上一次更新的Fiber节点）
+      // didReceiveUpdate === false时可以复用
       var oldProps = current.memoizedProps;
       var newProps = workInProgress.pendingProps;
-
       if (oldProps !== newProps || hasContextChanged() || ( // Force a re-render if the implementation changed due to hot reload:
        workInProgress.type !== current.type )) {
         // If props or context changed, mark the fiber as having performed work.
@@ -19858,7 +19866,7 @@
               return updateOffscreenComponent(current, workInProgress, renderLanes);
             }
         }
-
+        // 复用current
         return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
       } else {
         if ((current.flags & ForceUpdateForLegacySuspense) !== NoFlags) {
@@ -19884,6 +19892,7 @@
 
     workInProgress.lanes = NoLanes;
 
+  // mount时：根据tag不同，创建不同的子Fiber节点
     switch (workInProgress.tag) {
       case IndeterminateComponent:
         {
@@ -23601,6 +23610,7 @@
     // and prepare a fresh one. Otherwise we'll continue where we left off.
 
     if (workInProgressRoot !== root || workInProgressRootRenderLanes !== lanes) {
+      // 给workInProgressRoot 赋值，创建 workInProgress
       prepareFreshStack(root, lanes);
       startWorkOnPendingInteractions(root, lanes);
     }
@@ -23725,6 +23735,8 @@
     }
   }
 
+  // performUnitOfWork方法会创建下一个Fiber节点并赋值给workInProgress，并将workInProgress与已创建的Fiber节点连接起来构成Fiber树。
+  // （render阶段的起点），之后会执行render阶段和commit阶段
   function performUnitOfWork(unitOfWork) {
     // The current, flushed, state of this fiber is the alternate. Ideally
     // nothing should rely on this, but relying on it here means that we don't
@@ -23754,7 +23766,7 @@
     ReactCurrentOwner$2.current = null;
   }
 
-  function completeUnitOfWork(unitOfWork) {
+  function completeUnitOfWork(unitOfWork) { 
     // Attempt to complete the current unit of work, then move to the next
     // sibling. If there are no more siblings, return to the parent fiber.
     var completedWork = unitOfWork;
@@ -23961,6 +23973,7 @@
       // no more pending effects.
       // TODO: Might be better if `flushPassiveEffects` did not automatically
       // flush synchronous work at the end, to avoid factoring hazards like this.
+      // 触发useEffect回调与其他同步任务。由于这些任务可能触发新的渲染，所以这里要一直遍历执行直到没有任务
       flushPassiveEffects();
     } while (rootWithPendingPassiveEffects !== null);
 
@@ -24024,6 +24037,11 @@
     var firstEffect;
 
     if (finishedWork.flags > PerformedWork) {
+      // 将effectList赋值给firstEffect
+      // 由于每个fiber的effectList只包含他的子孙节点
+      // 所以根节点如果有effectTag则不会被包含进来
+      // 所以这里将有effectTag的根节点插入到effectList尾部
+      // 这样才能保证有effect的fiber都在effectList中
       // A fiber's effect list consists only of its children, not itself. So if
       // the root has an effect, we need to add it to the end of the list. The
       // resulting list is the set that would belong to the root's parent, if it
