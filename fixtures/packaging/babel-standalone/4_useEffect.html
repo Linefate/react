@@ -6,19 +6,28 @@
     <div id="container"></div>
     <!-- debugger -->
     <script type="text/babel">
+        function Container ({count}) {
+            const [containerCount,setcontainerCount] = React.useState(100)
+            React.useEffect(() => {
+               console.log('child  useEffect')
+            }, [containerCount])
+            return <span>{count}</span>
+        }
+
         function App () {
             const [count,setCount] = React.useState(7)
             React.useEffect(() => {
                 debugger
+                console.log('father  useEffect')
                 setTimeout(() => {
                     setCount((count) => {
-                        return count +1
                     })
                 }, 4000)
                    
             }, [count])
 
             return <button>click me ({count}) </button>
+            // return <button>click me (<Container count={count} />) </button>
         }
       ReactDOM.render(
         <App />,
