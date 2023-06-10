@@ -1,0 +1,38 @@
+<html>
+
+<body>
+    <script src="./sourceCode/react/umd/react.development.js"></script>
+    <script src="./sourceCode/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.js"></script>
+    <div id="container"></div>
+    <!-- debugger -->
+    <script type="text/babel">
+        class AnErrorBoundary extends React.Component {
+            state = {
+                hasError: false
+            }
+            static getDerivedStateFromError(e) {
+                console.log('derive', e)
+                return {
+                    hasError: true
+                }
+            }
+            componentDidCatch(e) {
+                console.log('did catch', e)
+            }
+            render() {
+                return this.state.hasError ? <p> hey, some error </p> : <div>{this.props.children}</div>
+            }
+        }
+        function App() {
+            throw new Error('it is my error')
+            return <p>Hi！Qianqian </p>
+        }
+        ReactDOM.render(
+            <AnErrorBoundary><App /></AnErrorBoundary>,
+            document.getElementById('container')
+        );
+    </script>
+</body>
+
+</html>
