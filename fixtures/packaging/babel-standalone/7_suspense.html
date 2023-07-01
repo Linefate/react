@@ -1,0 +1,32 @@
+<html>
+
+<body>
+    <script src="./sourceCode/react/umd/react.development.js"></script>
+    <script src="./sourceCode/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.js"></script>
+    <div id="container"></div>
+    <!-- debugger -->
+    <script type="text/babel">
+        let count = 7
+        function App() {
+            if(count === 7) {
+                throw new Promise((resove) => {
+                    setTimeout(() => {
+                        resove()
+                    }, 1000);
+                }).then(() => {
+                    debugger
+                    count = 8
+                })
+            }
+            return <p>{count} </p>
+        }
+
+        ReactDOM.render(
+            <React.Suspense fallback={<p>hey,not ready</p>}><App /></React.Suspense>,
+            document.getElementById('container')
+        );
+    </script>
+</body>
+
+</html>
