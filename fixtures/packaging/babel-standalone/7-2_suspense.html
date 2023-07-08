@@ -1,0 +1,38 @@
+<html>
+
+<body>
+    <script src="./sourceCode/react/umd/react.development.js"></script>
+    <script src="./sourceCode/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.js"></script>
+    <div id="container"></div>
+    <!-- debugger -->
+    <script type="text/babel">
+
+
+        const resouce = {
+            valuse: undefined,
+            read() {
+                if(this.valuse === undefined) {
+                    throw new Promise((resolve, reject) => {
+                        setTimeout(reject('some error'), 1000)
+                    }).then(() => {
+                        this.valuse = 7
+                    })
+                } 
+                return this.valuse
+            }
+        }
+        
+        function App() {
+            const state = resouce.read()
+            return <p>{state} </p>
+        }
+
+        ReactDOM.render(
+            <React.Suspense fallback={<p>hey,not ready</p>}><App /></React.Suspense>,
+            document.getElementById('container')
+        );
+    </script>
+</body>
+
+</html>
