@@ -1,24 +1,13 @@
 <html>
 
 <body>
-  <script src="./umd/react-dom.18.2.development.js"></script>
   <script src="./umd/react.18.2.development.js"></script>
+  <script src="./umd/react-dom.18.2.development.js"></script>
   <script src="./umd/babel.js"></script>
   <div id="app"></div>
   <script type="text/babel">
-
     function App() {
-      const [count, setCount] = React.useState(1)
-      debugger
-      React.useEffect(() => {
-        debugger
-        console.log('rendered');
-      }, []);
-
-      return <div>
-        <p>hello</p>
-        <button>{count}</button>
-      </div>
+      return <h1>hello world</h1>
     }
 
     const container = document.getElementById('app');
