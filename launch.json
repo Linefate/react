@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "调试 React HTML",
+            "url": "${workspaceFolder}/fixtures/packaging/babel-standalone/1-render.html",
+            "webRoot": "${workspaceFolder}",
+            "userDataDir": false,
+            "runtimeArgs": [
+                "--auto-open-devtools-for-tabs"
+            ]
+        }
+    ]
+}
