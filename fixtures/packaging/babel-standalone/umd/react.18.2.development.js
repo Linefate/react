@@ -6,6 +6,7 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ * 此源代码根据 MIT 许可证授权,可在根目录的 LICENSE 文件中找到
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
@@ -796,6 +797,8 @@
   /**
    * Create and return a new ReactElement of the given type.
    * See https://reactjs.org/docs/react-api.html#createelement
+   * 创建并返回给定类型的新 ReactElement
+   * 参见 https://reactjs.org/docs/react-api.html#createelement
    */
 
   function createElement(type, config, children) {
@@ -890,6 +893,8 @@
   /**
    * Clone and return a new ReactElement using element as the starting point.
    * See https://reactjs.org/docs/react-api.html#cloneelement
+   * 使用 element 作为起点克隆并返回一个新的 ReactElement
+   * 参见 https://reactjs.org/docs/react-api.html#cloneelement
    */
 
   function cloneElement(element, config, children) {
@@ -970,6 +975,11 @@
    * @param {?object} object
    * @return {boolean} True if `object` is a ReactElement.
    * @final
+   * 验证对象是否为 ReactElement
+   * 参见 https://reactjs.org/docs/react-api.html#isvalidelement
+   * @param {?object} object
+   * @return {boolean} 如果 `object` 是 ReactElement，则为 true
+   * @final
    */
 
   function isValidElement(object) {
@@ -983,6 +993,10 @@
    *
    * @param {string} key to be escaped.
    * @return {string} the escaped key.
+   * 转义并包装键，以便安全地用作 reactid
+   *
+   * @param {string} key 要转义的键
+   * @return {string} 转义后的键
    */
 
   function escape(key) {
@@ -999,6 +1013,7 @@
   /**
    * TODO: Test that a single child and an array with one item have the same key
    * pattern.
+   * 测试单个子元素和包含一个项的数组是否具有相同的键模式
    */
 
 
@@ -1013,6 +1028,11 @@
    *
    * @param {*} element A element that could contain a manual key.
    * @param {number} index Index that is used if a manual key is not provided.
+   * @return {string}
+   * 生成一个标识集合中元素的键字符串
+   *
+   * @param {*} element 可能包含手动键的元素
+   * @param {number} index 如果未提供手动键，则使用的索引
    * @return {string}
    */
 
@@ -1164,6 +1184,17 @@
    * @param {function(*, int)} func The map function.
    * @param {*} context Context for mapFunction.
    * @return {object} Object containing the ordered map of results.
+   * 映射通常指定为 `props.children` 的子元素
+   *
+   * 参见 https://reactjs.org/docs/react-api.html#reactchildrenmap
+   *
+   * 提供的 mapFunction(child, index) 将为每个
+   * 叶子子元素调用
+   *
+   * @param {?*} children 子元素树容器
+   * @param {function(*, int)} func 映射函数
+   * @param {*} context mapFunction 的上下文
+   * @return {object} 包含有序结果映射的对象
    */
   function mapChildren(children, func, context) {
     if (children == null) {
@@ -1185,6 +1216,12 @@
    *
    * @param {?*} children Children tree container.
    * @return {number} The number of children.
+   * 计算通常指定为 `props.children` 的子元素数量
+   *
+   * 参见 https://reactjs.org/docs/react-api.html#reactchildrencount
+   *
+   * @param {?*} children 子元素树容器
+   * @return {number} 子元素数量
    */
 
 
@@ -1207,6 +1244,16 @@
    * @param {?*} children Children tree container.
    * @param {function(*, int)} forEachFunc
    * @param {*} forEachContext Context for forEachContext.
+   * 迭代通常指定为 `props.children` 的子元素
+   *
+   * 参见 https://reactjs.org/docs/react-api.html#reactchildrenforeach
+   *
+   * 提供的 forEachFunc(child, index) 将为每个
+   * 叶子子元素调用
+   *
+   * @param {?*} children 子元素树容器
+   * @param {function(*, int)} forEachFunc
+   * @param {*} forEachContext forEachContext 的上下文
    */
   function forEachChildren(children, forEachFunc, forEachContext) {
     mapChildren(children, function () {
@@ -1218,6 +1265,10 @@
    * return an array with appropriately re-keyed children.
    *
    * See https://reactjs.org/docs/react-api.html#reactchildrentoarray
+   * 将子元素对象（通常指定为 `props.children`）扁平化
+   * 并返回一个带有适当重新键控子元素的数组
+   *
+   * 参见 https://reactjs.org/docs/react-api.html#reactchildrentoarray
    */
 
 
@@ -1239,6 +1290,15 @@
    * @param {?object} children Child collection structure.
    * @return {ReactElement} The first and only `ReactElement` contained in the
    * structure.
+   * 返回子元素集合中的第一个子元素，并验证集合中只有一个子元素
+   *
+   * 参见 https://reactjs.org/docs/react-api.html#reactchildrenonly
+   *
+   * 此函数的当前实现假定传递了一个没有包装器的单个子元素，但此辅助函数的目的是
+   * 抽象出子元素的特定结构
+   *
+   * @param {?object} children 子元素集合结构
+   * @return {ReactElement} 结构中包含的第一个且唯一的 `ReactElement`
    */
 
 
@@ -2355,7 +2415,6 @@
   function createElementWithValidation(type, props, children) {
     var validType = isValidElementType(type); // We warn in this case but don't throw. We expect the element creation to
     // succeed and there will likely be errors in render.
-
     if (!validType) {
       var info = '';
 
@@ -3465,5 +3524,89 @@
   exports.useSyncExternalStore = useSyncExternalStore;
   exports.useTransition = useTransition;
   exports.version = ReactVersion;
+
+  // A real boolean attribute.
+  // When true, it should be present (set either to an empty string or its name).
+  // When false, it should be omitted.
+  // 真正的布尔属性
+  // 当为 true 时，应该存在(设置为空字符串或其名称)
+  // 当为 false 时，应该省略
+
+  var BOOLEAN = 3; 
+
+  // An attribute that can be used as a flag as well as with a value.
+  // When true, it should be present (set either to an empty string or its name).
+  // When false, it should be omitted.
+  // For any other value, should be present with that value.
+  // 一个既可以用作标志又可以带有值的属性
+  // 当为 true 时，应该存在(设置为空字符串或其名称)
+  // 当为 false 时，应该省略
+  // 对于任何其他值，都应该与该值一起存在
+
+  var OVERLOADED_BOOLEAN = 4;
+
+  // An attribute that must be numeric or parse as a numeric.
+  // When falsy, it should be removed.
+  // 必须是数字或解析为数字的属性
+  // 当为假值时，应该被移除
+
+  var NUMERIC = 5;
+
+  // An attribute that must be positive numeric or parse as a positive numeric.
+  // When falsy, it should be removed.
+  // 必须是正数或解析为正数的属性
+  // 当为假值时，应该被移除
+
+  var POSITIVE_NUMERIC = 6;
+
+  /* eslint-disable max-len */
+  // 禁用最大长度检查
+
+  var ATTRIBUTE_NAME_START_CHAR = ":A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD";
+  /* eslint-enable max-len */
+  // 启用最大长度检查
+
+  var ATTRIBUTE_NAME_CHAR = ATTRIBUTE_NAME_START_CHAR + "\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040";
+
+  function markRootUpdated(root, updateLane, eventTime) {
+    root.pendingLanes |= updateLane; 
+    
+    // If there are any suspended transitions, it's possible this new update
+    // could unblock them. Clear the suspended lanes so that we can try rendering
+    // them again.
+    //
+    // TODO: We really only need to unsuspend only lanes that are in the
+    // `subtreeLanes` of the updated fiber, or the update lanes of the return
+    // path. This would exclude suspended updates in an unrelated sibling tree,
+    // since there's no way for this update to unblock it.
+    //
+    // We don't do this if the incoming update is idle, because we never process
+    // idle updates until after all the regular updates have finished; there's no
+    // way it could unblock a transition.
+    // 如果有任何被挂起的过渡，这个新的更新可能会解除它们的阻塞。
+    // 清除被挂起的 lanes，这样我们可以尝试重新渲染它们。
+    //
+    // TODO: 我们实际上只需要解除更新后的 fiber 的 `subtreeLanes` 中的 lanes，
+    // 或者返回路径的更新 lanes 的挂起状态。这样可以排除不相关兄弟树中的挂起更新，
+    // 因为这个更新没有办法解除它的阻塞。
+    //
+    // 如果传入的更新是空闲的，我们不会这样做，因为在所有常规更新完成之前，
+    // 我们永远不会处理空闲更新；它不可能解除过渡的阻塞。
+
+    if (updateLane !== IdleLane) {
+      root.suspendedLanes = NoLanes;
+      root.pingedLanes = NoLanes;
+    }
+
+    var eventTimes = root.eventTimes;
+    var index = laneToIndex(updateLane);
+
+    // We can always overwrite an existing timestamp because we prefer the most
+    // recent event, and we assume time is monotonically increasing.
+    // 我们总是可以覆盖现有的时间戳，因为我们更倾向于最近的事件，
+    // 并且我们假设时间是单调递增的。
+
+    eventTimes[index] = eventTime;
+  }
 
 })));

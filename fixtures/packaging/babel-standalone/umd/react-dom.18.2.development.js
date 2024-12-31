@@ -26422,14 +26422,18 @@
   // root has work on. This function is called on every update, and right before
   // exiting a task.
 
+  // 负责确保 root 节点有一个调度任务在运行。
   function ensureRootIsScheduled(root, currentTime) {
+    // 1、检查现有回调和饥饿的lanes
+    // 获取当前存在的回调节点
     var existingCallbackNode = root.callbackNode; // Check if any lanes are being starved by other work. If so, mark them as
     // expired so we know to work on those next.
-
+     // 检查是否有被饿死的 lanes，标记为过期
     markStarvedLanesAsExpired(root, currentTime); // Determine the next lanes to work on, and their priority.
-
+    // 2.确定下一批工作
+    // 获取下一批需要处理的 lanes
     var nextLanes = getNextLanes(root, root === workInProgressRoot ? workInProgressRootRenderLanes : NoLanes);
-
+    // 如果没有工作要做，清理回调并返回
     if (nextLanes === NoLanes) {
       // Special case: There's nothing to work on.
       if (existingCallbackNode !== null) {
@@ -26441,11 +26445,12 @@
       return;
     } // We use the highest priority lane to represent the priority of the callback.
 
-
+    // 3、优先级处理
+   // 获取最高优先级的 lane
     var newCallbackPriority = getHighestPriorityLane(nextLanes); // Check if there's an existing task. We may be able to reuse it.
 
     var existingCallbackPriority = root.callbackPriority;
-
+    //如果优先级相同且不需要重新调度，直接复用现有任务
     if (existingCallbackPriority === newCallbackPriority && // Special case related to `act`. If the currently scheduled task is a
     // Scheduler task, rather than an `act` task, cancel it and re-scheduled
     // on the `act` queue.
@@ -26463,6 +26468,8 @@
       return;
     }
 
+    // 4、调度新的的回调
+    // 取消现有回调
     if (existingCallbackNode != null) {
       // Cancel the existing callback. We'll schedule a new one below.
       cancelCallback$1(existingCallbackNode);
@@ -26470,10 +26477,11 @@
 
 
     var newCallbackNode;
-
+    // 根据优先级分别处理
     if (newCallbackPriority === SyncLane) {
       // Special case: Sync React callbacks are scheduled on a special
       // internal queue
+      // 同步任务处理
       if (root.tag === LegacyRoot) {
         if ( ReactCurrentActQueue$1.isBatchingLegacy !== null) {
           ReactCurrentActQueue$1.didScheduleLegacyUpdate = true;
@@ -26508,8 +26516,10 @@
 
       newCallbackNode = null;
     } else {
+      // 并发任务处理
       var schedulerPriorityLevel;
 
+        // 将 lane 优先级转换为调度器优先级
       switch (lanesToEventPriority(nextLanes)) {
         case DiscreteEventPriority:
           schedulerPriorityLevel = ImmediatePriority;
@@ -26532,6 +26542,7 @@
           break;
       }
 
+      // 调度并发工作
       newCallbackNode = scheduleCallback$2(schedulerPriorityLevel, performConcurrentWorkOnRoot.bind(null, root));
     }
 
