@@ -2811,26 +2811,34 @@
     advanceTimers(currentTime);
     currentTask = peek(taskQueue);
 
-    while (currentTask !== null && !(enableSchedulerDebugging )) {
+    
+    while (currentTask !== null && !(enableSchedulerDebugging)) {
+        //1、时间切片 检查是否需要中断循环
       if (currentTask.expirationTime > currentTime && (!hasTimeRemaining || shouldYieldToHost())) {
         // This currentTask hasn't expired, and we've reached the deadline.
+        // 任务未过期，且已达到时间限制，中断循环
         break;
       }
 
+      // 任务执行
       var callback = currentTask.callback;
 
       if (typeof callback === 'function') {
         currentTask.callback = null;
+        // 设置当前优先级
         currentPriorityLevel = currentTask.priorityLevel;
+        // 检查任务是否超时
         var didUserCallbackTimeout = currentTask.expirationTime <= currentTime;
-
+        // 执行任务
         var continuationCallback = callback(didUserCallbackTimeout);
         currentTime = getCurrentTime();
 
+        // 2.支持任务的连续执行
         if (typeof continuationCallback === 'function') {
+          // 任务未完成，继续执行
           currentTask.callback = continuationCallback;
         } else {
-
+          // 任务完成，移除任务
           if (currentTask === peek(taskQueue)) {
             pop(taskQueue);
           }
@@ -2848,6 +2856,7 @@
     if (currentTask !== null) {
       return true;
     } else {
+      // 3. 检查是否有延迟任务
       var firstTimer = peek(timerQueue);
 
       if (firstTimer !== null) {
