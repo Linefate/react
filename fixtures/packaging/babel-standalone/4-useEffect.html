@@ -1,0 +1,56 @@
+<html>
+
+</html>
+
+<body>
+    <script src="./umd/react.18.2.development.js"></script>
+    <script src="./umd/react-dom.18.2.development.js"></script>
+    <script src="./umd/babel.js"></script>
+    <div id="app"></div>
+    <script type="text/babel">
+        debugger
+        function Link() {
+            React.useEffect(() => {
+                console.log('useEffect  link2');
+            }, []);
+            React.useEffect(() => {
+                console.log('useEffect  link1');
+            }, []);
+            React.useEffect(() => {
+                console.log('useEffect  link3');
+            }, []);
+
+
+            React.useLayoutEffect(() => {
+                console.log('useLayoutEffect link');
+            }, []);
+
+            return <a href="https://qianqian.com">qianqian.dev</a>
+        }
+        function App() {
+            const [count, setCount] = React.useState(0)
+            React.useEffect(() => {
+                console.log('useEffect');
+            }, []);
+
+            React.useLayoutEffect(() => {
+                console.log('useLayoutEffect');
+            }, []);
+            return (
+                <div>
+                    <p>
+                        <Link />
+                        <br />
+                        <button onClick={() => setCount(count => count + 1)}>click me - {count}</button>
+                    </p>
+                </div>
+            );
+        }
+
+        const container = document.getElementById('app');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
