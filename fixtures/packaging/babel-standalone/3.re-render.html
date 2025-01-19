@@ -1,0 +1,40 @@
+<html>
+
+<body>
+    <script src="./umd/react.18.2.development.js"></script>
+    <script src="./umd/react-dom.18.2.development.js"></script>
+    <script src="./umd/babel.js"></script>
+    <div id="app"></div>
+    <script type="text/babel">
+        function Link() {
+            return <a href="https://qianqian.dev">qianqian.dev</a>;
+        }
+
+        function Component() {
+            const [count, setCount] = React.useState(0);
+            return (
+                <div>
+                    <button onClick={() => setCount((count) => count + 1)}>
+                        click me - {count}
+                    </button> ({count % 2 === 0 ? <span>even</span> : <b>odd</b>})
+                </div>
+            );
+        }
+        function App() {
+            return (
+                <div>
+                    <Link />
+                    <br />
+                    <Component />
+                </div>
+            );
+        }
+
+
+        const container = document.getElementById('app');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
