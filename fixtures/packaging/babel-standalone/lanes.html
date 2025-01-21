@@ -1,0 +1,40 @@
+<body>
+    <script src="./umd/react.18.2.development.js"></script>
+    <script src="./umd/react-dom.18.2.development.js"></script>
+    <script src="./umd/babel.js"></script>
+    <div id="app"></div>
+    <script type="text/babel">
+        // docs: https://jser.dev/react/2022/03/26/lanes-in-react/
+        function App() {
+            const [num, setNum] = React.useState(1);
+            const renders = React.useRef([]);
+            renders.current.push(num);
+            return (
+                <div>
+                    <button
+                        onClick={() => {
+                            // 记得在react-dom中处理这个挂载
+                            // window.setCurrentUpdatePriority = setCurrentUpdatePriority;
+                            // 修改当前的优先级
+                            // setCurrentUpdatePriority(4);
+                            setNum((num) => num + 1);
+                            // setCurrentUpdatePriority(1);
+                            setNum((num) => num * 10);
+                        }}
+                    >
+                        click me
+                    </button>
+                    {renders.current.map((log, i) => (
+                        <p key={i}>{log}</p>
+                    ))}
+                </div>
+            );
+        }
+
+        const container = document.getElementById('app');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
