@@ -8,7 +8,7 @@
     <script src="./umd/babel.js"></script>
     <div id="app"></div>
     <script type="text/babel">
-        debugger
+        // docs: https://jser.dev/2023-07-08-how-does-useeffect-work
         function Link() {
             React.useEffect(() => {
                 console.log('useEffect  link2');
@@ -28,7 +28,7 @@
             return <a href="https://qianqian.com">qianqian.dev</a>
         }
         function App() {
-            const [count, setCount] = React.useState(0)
+            const [count, setCount] = React.useState(234)
             React.useEffect(() => {
                 console.log('useEffect');
             }, []);
@@ -39,8 +39,8 @@
             return (
                 <div>
                     <p>
+                        <div>123</div>
                         <Link />
-                        <br />
                         <button onClick={() => setCount(count => count + 1)}>click me - {count}</button>
                     </p>
                 </div>
