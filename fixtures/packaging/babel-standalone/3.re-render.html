@@ -11,10 +11,14 @@
         }
 
         function Component() {
-            const [count, setCount] = React.useState(0);
+            const [count, setCount] = React.useState(6);
             return (
                 <div>
-                    <button onClick={() => setCount((count) => count + 1)}>
+                    <button onClick={() => {
+                        debugger
+                        setCount((count) => count + 3)
+                    }
+                    }>
                         click me - {count}
                     </button> ({count % 2 === 0 ? <span>even</span> : <b>odd</b>})
                 </div>
