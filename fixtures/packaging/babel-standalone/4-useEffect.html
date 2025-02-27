@@ -9,7 +9,7 @@
     <div id="app"></div>
     <script type="text/babel">
         // docs: https://jser.dev/2023-07-08-how-does-useeffect-work
-        function Link() {
+        function Link({ count }) {
             React.useEffect(() => {
                 console.log('useEffect  link2');
             }, []);
@@ -20,6 +20,12 @@
                 console.log('useEffect  link3');
             }, []);
 
+            React.useEffect(() => {
+                console.log('useEffect link deps count', count);
+                return () => {
+                    console.log('useEffect link deps count --- clear');
+                };
+            }, [count]);
 
             React.useLayoutEffect(() => {
                 console.log('useLayoutEffect link');
@@ -30,22 +36,34 @@
         function App() {
             const [count, setCount] = React.useState(234)
             React.useEffect(() => {
-                console.log('useEffect');
+                console.log('useEffect no setState');
             }, []);
 
             React.useLayoutEffect(() => {
                 console.log('useLayoutEffect');
             }, []);
+
+            React.useEffect(() => {
+                console.log('useEffect setState');
+                setCount((count) => {
+                    console.log("set State ----")
+                    return count + 1
+                });
+            }, []);
             return (
                 <div>
                     <p>
                         <div>123</div>
-                        <Link />
+                        <Link count={count} />
                         <button onClick={() => setCount(count => count + 1)}>click me - {count}</button>
                     </p>
                 </div>
             );
         }
+
+
+
+
 
         const container = document.getElementById('app');
         const root = ReactDOM.createRoot(container);
