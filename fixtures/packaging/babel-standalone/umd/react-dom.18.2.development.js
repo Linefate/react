@@ -22825,6 +22825,7 @@
               }
             } else {
               var instance = createInstance(type, newProps, rootContainerInstance, currentHostContext, workInProgress);
+              debugger
               appendAllChildren(instance, workInProgress, false, false);
               workInProgress.stateNode = instance; // Certain renderers require commit-time effects for initial mount.
               // (eg DOM renderer supports auto-focus for certain elements).
@@ -24962,6 +24963,7 @@
     inProgressLanes = committedLanes;
     inProgressRoot = root;
     setCurrentFiber(finishedWork);
+    debugger
     commitMutationEffectsOnFiber(finishedWork, root);
     setCurrentFiber(finishedWork);
     inProgressLanes = null;
@@ -26428,7 +26430,7 @@
     // 获取当前存在的回调节点
     var existingCallbackNode = root.callbackNode; // Check if any lanes are being starved by other work. If so, mark them as
     // expired so we know to work on those next.
-     // 检查是否有被饿死的 lanes，标记为过期
+     // 检查是否有被饿死的（长时间未处理） lanes，标记为过期
     markStarvedLanesAsExpired(root, currentTime); // Determine the next lanes to work on, and their priority.
     // 2.确定下一批工作
     // 获取下一批需要处理的 lanes
