@@ -2592,7 +2592,7 @@
     var index = heap.length;
     heap.push(node);
     siftUp(heap, node, index);
-  }
+  } 
   function peek(heap) {
     return heap.length === 0 ? null : heap[0];
   }
@@ -2612,10 +2612,21 @@
     return first;
   }
 
+  // 小顶堆是一种特殊的完全二叉树数据结构，具有以下关键特点：
+  // 堆序属性：每个节点的值都小于或等于其子节点的值
+  // 结构性质：除最底层外，树的每一层都是填满的，最底层从左到右填充
+  // 最小值特性：根节点总是整个堆中的最小元素
+  // -----
+  // 1. 每个节点的值小于或等于其子节点的值
+  // 2. 每个节点的值大于或等于其父节点的值
+  // 3. 每个节点的子节点最多有两个
+  // 4. 每个节点的父节点最多有一个
+  // 上浮：将新插入的节点与父节点比较，如果父节点大于新节点，则交换位置
   function siftUp(heap, node, i) {
     var index = i;
 
     while (index > 0) {
+      // 父节点的索引:  (index -1) /2, 下面使用位运算比较快而已
       var parentIndex = index - 1 >>> 1;
       var parent = heap[parentIndex];
 
@@ -2631,6 +2642,8 @@
     }
   }
 
+  // 下沉：将新插入的节点与子节点比较，如果子节点小于新节点，则交换位置
+  // 这个操作确保从堆顶移除元素后，最后一个元素放到堆顶位置能够下移到正确位置。
   function siftDown(heap, node, i) {
     var index = i;
     var length = heap.length;
@@ -2952,28 +2965,29 @@
     var timeout;
 
     switch (priorityLevel) {
+      // 立即执行
       case ImmediatePriority:
         timeout = IMMEDIATE_PRIORITY_TIMEOUT;
         break;
-
+      // 用户阻塞优先级：如按钮点击
       case UserBlockingPriority:
         timeout = USER_BLOCKING_PRIORITY_TIMEOUT;
         break;
-
+      // 空闲优先级
       case IdlePriority:
         timeout = IDLE_PRIORITY_TIMEOUT;
         break;
-
+      // 低优先级: 可延迟的任务10000ms（10s）
       case LowPriority:
         timeout = LOW_PRIORITY_TIMEOUT;
         break;
-
+      // 默认优先级 5000ms
       case NormalPriority:
       default:
         timeout = NORMAL_PRIORITY_TIMEOUT;
         break;
     }
-
+    // 到期时间
     var expirationTime = startTime + timeout;
     var newTask = {
       id: taskIdCounter++,
@@ -2985,7 +2999,8 @@
     };
 
     if (startTime > currentTime) {
-      // This is a delayed task.
+      // 这是一个延迟的任务。
+// sortIndex使用开始时间，这确保开始时间最早的延迟任务会先从timerQueue移到taskQueue。
       newTask.sortIndex = startTime;
       push(timerQueue, newTask);
 
@@ -3002,6 +3017,8 @@
         requestHostTimeout(handleTimeout, startTime - currentTime);
       }
     } else {
+      // 这是一个立即执行的任务。
+      // sortIndex使用过期时间，这意味着先过期的任务会先执行。
       newTask.sortIndex = expirationTime;
       push(taskQueue, newTask);
       // wait until the next time we yield.
