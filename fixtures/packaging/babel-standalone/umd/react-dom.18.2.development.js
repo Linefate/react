@@ -26553,7 +26553,7 @@
   } // This is the entry point for every concurrent task, i.e. anything that
   // goes through Scheduler.
 
-
+  // 调度恢复入口
   function performConcurrentWorkOnRoot(root, didTimeout) {
     {
       resetNestedUpdateFlag();
@@ -26569,13 +26569,15 @@
     } // Flush any pending passive effects before deciding which lanes to work on,
     // in case they schedule additional work.
 
-
+    // 1. 恢复标识与状态检查
+    // 下面代码首先保存当前回调节点，然后检查刷新副作用后回调节点是否变化，这是判断任务是否仍有效的关键步骤。
     var originalCallbackNode = root.callbackNode;
     var didFlushPassiveEffects = flushPassiveEffects();
-
+    // 执行副作用之后
     if (didFlushPassiveEffects) {
       // Something in the passive effect phase may have canceled the current task.
       // Check if the task node for this root was changed.
+      // 如果在执行副作用期间当前任务被取消，检查回调节点是否变化
       if (root.callbackNode !== originalCallbackNode) {
         // The current task was canceled. Exit. We don't need to call
         // `ensureRootIsScheduled` because the check above implies either that
@@ -26599,6 +26601,10 @@
     // we can remove this, since we track expiration ourselves.
 
 
+    //2、时间分片的决策
+    // 如果包含阻塞性Lane（如同步Lane）- 不可中断
+    // 如果包含过期Lane - 不可中断
+    // 如果已经超时 - 不可中断
     var shouldTimeSlice = !includesBlockingLane(root, lanes) && !includesExpiredLane(root, lanes) && ( !didTimeout);
     var exitStatus = shouldTimeSlice ? renderRootConcurrent(root, lanes) : renderRootSync(root, lanes);
 
@@ -26623,7 +26629,7 @@
         ensureRootIsScheduled(root, now());
         throw fatalError;
       }
-
+    // 未执行完成
       if (exitStatus === RootDidNotComplete) {
         // The render unwound without completing the tree. This happens in special
         // cases where need to exit the current render without producing a
@@ -26676,6 +26682,10 @@
     }
 
     ensureRootIsScheduled(root, now());
+    // 当前执行的任务节点与调度的一致，需要返回延续
+//     originalCallbackNode 是函数开始执行时保存的回调节点
+// root.callbackNode 是当前根节点的回调节点
+// 如果两者相等，说明当前执行的任务就是原来调度的那个任务，没有被新的高优先级任务取代
 
     if (root.callbackNode === originalCallbackNode) {
       // The task node scheduled for this root is the same one that's
