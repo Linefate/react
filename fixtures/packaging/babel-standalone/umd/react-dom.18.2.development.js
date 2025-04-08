@@ -26491,6 +26491,7 @@
 
         scheduleLegacySyncCallback(performSyncWorkOnRoot.bind(null, root));
       } else {
+        // 1.把任务 push 进入 asyncQueue
         scheduleSyncCallback(performSyncWorkOnRoot.bind(null, root));
       }
 
@@ -26502,6 +26503,7 @@
           // of `act`.
           ReactCurrentActQueue$1.current.push(flushSyncCallbacks);
         } else {
+          // 2.使用微任务刷新刚刚加入队列的同步回调
           scheduleMicrotask(function () {
             // In Safari, appending an iframe forces microtasks to run.
             // https://github.com/facebook/react/issues/22459
@@ -26518,7 +26520,7 @@
 
       newCallbackNode = null;
     } else {
-      // 并发任务处理
+      // 异步任务
       var schedulerPriorityLevel;
 
         // 将 lane 优先级转换为调度器优先级
