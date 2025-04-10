@@ -5780,9 +5780,14 @@
 
     return lane;
   }
+  // 通过位运算，获取当前lanes中的，最高优先级的lane
   function getHighestPriorityLane(lanes) {
     return lanes & -lanes;
   }
+  /**
+   * 实际上调用的是getHighestPriorityLane
+   * 获取当前lanes中的，最高优先级的lane
+   */
   function pickArbitraryLane(lanes) {
     // This wrapper function gets inlined. Only exists so to communicate that it
     // doesn't matter which bit is selected; you can pick any bit without
