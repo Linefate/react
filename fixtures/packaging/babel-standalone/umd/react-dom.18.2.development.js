@@ -26452,7 +26452,15 @@
     var newCallbackPriority = getHighestPriorityLane(nextLanes); // Check if there's an existing task. We may be able to reuse it.
 
     var existingCallbackPriority = root.callbackPriority;
-    //如果优先级相同且不需要重新调度，直接复用现有任务
+    /**
+     * 如果优先级相同且不需要重新调度，直接复用现有任务（多个setState ）
+     * 场景 ：多个setstate会复用同一个
+     * handleClick() {
+        this.setState({count: 1});
+        this.setState({count: 2}); 
+        this.setState({count: 3});
+      }
+     */
     if (existingCallbackPriority === newCallbackPriority && // Special case related to `act`. If the currently scheduled task is a
     // Scheduler task, rather than an `act` task, cancel it and re-scheduled
     // on the `act` queue.
