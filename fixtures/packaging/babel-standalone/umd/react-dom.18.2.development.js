@@ -24988,9 +24988,13 @@
     inProgressRoot = null;
   }
 
+  /**
+   * 递归遍历副作用
+   */
   function recursivelyTraverseMutationEffects(root, parentFiber, lanes) {
     // Deletions effects can be scheduled on any fiber type. They need to happen
     // before the children effects hae fired.
+    //  先判断删除的节点，然后递归遍历子fiber
     var deletions = parentFiber.deletions;
 
     if (deletions !== null) {
@@ -25007,11 +25011,15 @@
 
     var prevDebugFiber = getCurrentFiber();
 
+    // 如果父fiber的子树有副作用，则递归遍历子fiber
     if (parentFiber.subtreeFlags & MutationMask) {
       var child = parentFiber.child;
 
       while (child !== null) {
         setCurrentFiber(child);
+        /**
+         * 提交副作用,递归入口
+         */
         commitMutationEffectsOnFiber(child, root);
         child = child.sibling;
       }
@@ -25020,6 +25028,7 @@
     setCurrentFiber(prevDebugFiber);
   }
 
+  /** 提交副作用，递归入口 */
   function commitMutationEffectsOnFiber(finishedWork, root, lanes) {
     var current = finishedWork.alternate;
     var flags = finishedWork.flags; // The effect flag should be checked *after* we refine the type of fiber,
@@ -25032,6 +25041,7 @@
       case MemoComponent:
       case SimpleMemoComponent:
         {
+          // → 确保先对子树执行更新。
           recursivelyTraverseMutationEffects(root, finishedWork);
           commitReconciliationEffects(finishedWork);
 
@@ -25322,6 +25332,7 @@
     }
   }
 
+  // → 比如插入、移动、删除真实 DOM 节点。
   function commitReconciliationEffects(finishedWork) {
     // Placement effects (insertions, reorders) can be scheduled on any fiber
     // type. They needs to happen after the children effects have fired, but
@@ -27607,7 +27618,7 @@
     if ((executionContext & (RenderContext | CommitContext)) !== NoContext) {
       throw new Error('Should not already be working.');
     }
-
+// root.current.alternate === finishedWork
     var finishedWork = root.finishedWork;
     var lanes = root.finishedLanes;
 
@@ -27683,7 +27694,7 @@
     // only other reason this optimization exists is because it affects profiling.
     // Reconsider whether this is necessary.
 
-
+    // 检查子树和根节点是否有副作用
     var subtreeHasEffects = (finishedWork.subtreeFlags & (BeforeMutationMask | MutationMask | LayoutMask | PassiveMask)) !== NoFlags;
     var rootHasEffect = (finishedWork.flags & (BeforeMutationMask | MutationMask | LayoutMask | PassiveMask)) !== NoFlags;
 
@@ -27701,7 +27712,8 @@
       // The first phase a "before mutation" phase. We use this phase to read the
       // state of the host tree right before we mutate it. This is where
       // getSnapshotBeforeUpdate is called.
-
+      // → beforeMutation阶段：主要是处理class组件的 getSnapshotBeforeUpdate 生命周期。
+      // 其他组件没用做处理
       var shouldFireAfterActiveInstanceBlur = commitBeforeMutationEffects(root, finishedWork);
 
       {
