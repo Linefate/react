@@ -15950,6 +15950,19 @@
     }
 
     var currentChild = workInProgress.child;
+    /**
+     * 1. 双缓冲机制
+     * React 维护两棵 fiber 树：current 树（屏幕上显示的）和 workInProgress 树（正在构建的）
+     * 每个 fiber 节点通过 alternate 属性互相引用
+     * 2. 优化场景
+     * 当父 fiber 节点没有更新时，为了性能优化，workInProgress.child 初始时可能直接指向 current.child
+     * 但如果子树有更新，就不能直接共享子节点，必须克隆
+     * 
+     * 为 workInProgress 的子节点创建独立的 fiber 副本
+     * 因为在 bailout 优化中，workInProgress.child 初始指向 current.child
+     * 需要克隆子节点以保持 current 树和 workInProgress 树的独立性
+     */
+    
     var newChild = createWorkInProgress(currentChild, currentChild.pendingProps);
     workInProgress.child = newChild;
     newChild.return = workInProgress;
