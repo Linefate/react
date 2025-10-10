@@ -10,10 +10,11 @@ function compile(flags) {
   return new Promise((resolve, reject) => {
     const closureCompiler = new ClosureCompiler(flags);
     closureCompiler.run(function (exitCode, stdOut, stdErr) {
-      if (!stdErr) {
-        resolve(stdOut);
-      } else {
+      // 兼容 java jdk 21 忽略警告
+      if (stdErr && !stdErr.includes('WARNING')) {
         reject(new Error(stdErr));
+      } else {
+        resolve(stdOut);
       }
     });
   });
