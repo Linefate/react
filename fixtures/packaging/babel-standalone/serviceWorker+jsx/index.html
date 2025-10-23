@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>React Source Debug</title>
+    <script>
+        navigator.serviceWorker.register('/transform-code.js', {
+            scope: '/',
+        });
+    </script>
+
+    <script type="importmap">
+      { 
+        "imports": {
+          "react": "https://esm.sh/react?dev",
+          "react-dom/": "https://esm.sh/react-dom@19.1.0&dev/",
+          "react-dom/client": "https://esm.sh/react-dom@19/client?dev"
+        }
+      }
+    </script>
+</head>
+
+<!-- service worker + jsx 动态编译环境 -->
+ <!-- 
+  在 Service Worker 中加载 Babel 运行时，并拦截 JSX 请求，动态编译 JSX 并返回编译后的结果。
+  在页面中引入 JSX 文件，浏览器会自动请求 Service Worker 并返回编译后的 JavaScript 代码。
+  这样就实现了在浏览器中直接使用 JSX 语法，而无需手动编译。
+ -->
+<body>
+    <div id="app"></div>
+</body>
+<script type="module">
+    import './app.jsx';
+</script>
+
+</html>
