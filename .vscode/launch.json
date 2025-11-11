@@ -1,0 +1,79 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch via NPM",
+            "request": "launch",
+            "runtimeArgs": [
+                "run-script",
+                "debug"
+            ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open 3-re-render2.html",
+            "file": "/Users/qianqian/qianqianfile/domore/react/fixtures/packaging/babel-standalone/text-bable/3-re-render2.html",
+            "env": {
+                "LANG": "en_US.UTF-8"
+            }
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open 3-re-render.html",
+            "file": "/Users/qianqian/qianqianfile/domore/react/fixtures/packaging/babel-standalone/text-bable/3-re-render.html",
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open 2-init-mount.html",
+            "file": "/Users/qianqian/qianqianfile/domore/react/fixtures/packaging/babel-standalone/text-bable/2-init-mount.html",
+            "runtimeArgs": [
+                "--lang=en-US"
+            ]
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open 2-useEffect.html",
+            "file": "/Users/qianqian/qianqianfile/domore/react/fixtures/packaging/babel-standalone/text-bable/2-useEffect.html"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open 1-render.html",
+            "file": "/Users/qianqian/qianqianfile/domore/react/fixtures/packaging/babel-standalone/text-bable/1-render.html",
+        },
+        // 添加 node index.mjs
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug compiled koa.js",
+            "program": "/Users/qianqian/qianqianfile/domore/react/fixtures/packaging/babel-standalone/koa/index.mjs",
+            "console": "integratedTerminal",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug koa.ts via tsx",
+            "runtimeExecutable": "npx",
+            "runtimeArgs": [
+                "ts-node",
+                "/Users/qianqian/qianqianfile/domore/react/fixtures/packaging/babel-standalone/koa/index.ts"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}
