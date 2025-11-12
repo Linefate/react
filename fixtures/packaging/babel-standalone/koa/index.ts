@@ -46,11 +46,10 @@ function compose(middlewares) {
 
 
 export const koaFn = compose([A, B, C])
-console.log('koaFn', koaFn)
 
  koaFn(
    {
-     name: 'svip-button',
+     name: 'gongGong参数',
    },
    () => {
      console.log('执行业务流程')
